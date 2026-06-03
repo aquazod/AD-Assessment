@@ -7,15 +7,7 @@ into Zoho CRM Contacts and Deals.
 
 ## Architecture
 
-WooCommerce
-      ↓
-REST API
-      ↓
-Deluge Script
-      ↓
-Zoho CRM API
-      ↓
-Contacts + Deals
+WooCommerce -> REST API -> Deluge Script -> Zoho CRM API -> Contacts + Deals 
 
 ## Features
 
