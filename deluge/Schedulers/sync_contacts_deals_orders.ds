@@ -1,0 +1,4 @@
+void schedule.sync_contacts_deals_orders()
+{
+info standalone.sync_wc_orders();
+}

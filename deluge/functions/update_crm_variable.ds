@@ -3,6 +3,7 @@ string standalone.update_crm_variable(String varId,String varValue)
 	varData = Map();
 	varData.put("id",varId);
 	varData.put("value",varValue);
+	
 	varList = List();
 	varList.add(varData);
 

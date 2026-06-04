@@ -1,0 +1,81 @@
+string standalone.get_wc_orders()
+{
+	// --- Load CRM Variables ---
+	crmVars = standalone.get_crm_variables().toMap();
+
+	wc_base_url = crmVars.get("wp_base_url").toMap().get("value");
+	wc_rest_api = crmVars.get("wc_rest_api").toMap().get("value");
+	wc_consumer_key = crmVars.get("wc_consumer_key").toMap().get("value");
+	wc_consumer_secret = crmVars.get("wc_consumer_secret").toMap().get("value");
+
+	last_sync_var = crmVars.get("last_sync_timestamp").toMap();
+	last_sync_timestamp = last_sync_var.get("value");
+	last_sync_var_id = last_sync_var.get("id");
+
+	// --- Fields to fetch ---
+	fieldsParam = standalone.get_needed_order_fields();
+
+	// --- Pagination ---
+	allOrders = List();
+
+	page = 1;
+	perPage = 100;
+
+	maxModifiedTimestamp = last_sync_timestamp;
+
+	requestParams = "?consumer_key=" + wc_consumer_key 
+					+ "&consumer_secret=" + wc_consumer_secret 
+					+ "&status=completed" + "&modified_after=" 
+					+ last_sync_timestamp + "&per_page=" 
+					+ perPage + "&_fields=" + fieldsParam;
+
+	maxIterations = 1000;
+	loopCounter = leftpad("1",maxIterations).replaceAll(" ","1,").toList(); // workaround to iterate specific number of iterations
+
+	for each  item in loopCounter
+	{
+		endpoint = (wc_base_url + wc_rest_api) + "orders" + requestParams + "&page=" + page;
+
+		info endpoint;
+
+		pageOrders = invokeurl
+		[
+			url :endpoint
+			type :GET
+		];
+
+		if(pageOrders == null || pageOrders.size() == 0)
+		{
+			break;
+		}
+
+		for each  order in pageOrders
+		{
+			allOrders.add(order);
+
+			orderModified = order.get("date_modified");
+
+			if(orderModified != null && orderModified.toDateTime() > maxModifiedTimestamp.toDateTime()) // must convert to DateTime for comparison
+			{
+				maxModifiedTimestamp = orderModified;
+			}
+		}
+
+		// Extra terminating condition
+		if(pageOrders.size() < perPage)
+		{
+			break;
+		}
+
+		page = page + 1;
+	}
+
+	// --- Persist latest sync timestamp ---
+	if(maxModifiedTimestamp != last_sync_timestamp && last_sync_var_id != "")
+	{
+		standalone.update_crm_variable(last_sync_var_id, maxModifiedTimestamp);
+		info "Updating last sync timestamp to: " + maxModifiedTimestamp;
+	}
+
+	return allOrders.toString();
+}

@@ -1,0 +1,35 @@
+string standalone.update_contact(Map existingContact,Map receivedData)
+{
+    contactId = existingContact.get("id");
+
+    updateMap = Map();
+
+    fieldsToCheck = List();
+    fieldsToCheck.add("First_Name");
+    fieldsToCheck.add("Last_Name");
+    fieldsToCheck.add("Email");
+    fieldsToCheck.add("Phone");
+
+    for each  fieldName in fieldsToCheck
+    {
+        existingValue = ifnull(existingContact.get(fieldName),"").toString().trim();
+        receivedValue = ifnull(receivedData.get(fieldName),"").toString().trim();
+
+        if  (existingValue != receivedValue)
+        {
+            updateMap.put(fieldName,receivedValue);
+        }
+    }
+
+    if(updateMap.isEmpty())
+    {
+        info "Contact is already up to date.";
+        return contactId;
+    }
+
+    updateResponse = zoho.crm.updateRecord("Contacts",contactId,updateMap);
+    
+    info "updateResponse: " + updateResponse;
+
+    return contactId;
+}

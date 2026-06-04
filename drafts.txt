@@ -5,12 +5,7 @@ ZohoCRM.modules.leads.ALL, ZohoCRM.modules.contacts.ALL, ZohoCRM.modules.deals.A
 
 I choose the client type to be "Self Client"
 
->>>>>>>> Challenges I faced in this assessment: <<<<<<<<<
-- Zoho doesn't recognize the localhost website on my machine to send a request to WooCommerce REST API
-Solution: used API gateway ngrok to get a public URL, and used the URL for integrations with Zoho
-- I created all the functions as standalone, all standalone functions have to return string, not other data types
-Solution: converted other datatypes toString() in the return statements for functions, converted them to other data types in the functions calls
-
+2000-01-01T00:00:00	default timestamp
 
 What I Would Put In README
 
@@ -33,13 +28,15 @@ Use a clear mapping table in README.
 WooCommerce	Zoho Contact
 first_name	First_Name
 last_name	Last_Name
-email	Email
+email	    Email
+phone       Phone
 
 
-WooCommerce	Zoho Deal
-order_id	Deal_Name
-total	Amount
+WooCommerce	    Zoho Deal
+order_id	    Deal_Name
+total	        Amount
 customer_name	Contact
+line_items      Description
 
 
 
@@ -90,19 +87,9 @@ https://accounts.zoho.com/oauth/v2/auth?scope=ZohoCRM.modules.leads.ALL,ZohoCRM.
 https://accounts.zoho.com/oauth/v2/auth?access_type=offline&prompt=consent
 
 
-response = invokeUrl [
-	url: <url>
-	type: GET/POST/PUT/DELETE
-	parameters: <paramMap/string>
-	connection: "crm_connection"
-];
-
-TODO:
-send order by desc ID instead of asc -> handle lastupdatedid 
-
+TODO
 add error handling everywhere
 
 add logs
 
 check security best practices
-

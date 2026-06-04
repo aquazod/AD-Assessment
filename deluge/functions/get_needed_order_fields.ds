@@ -1,0 +1,14 @@
+string standalone.get_needed_order_fields()
+{
+    fields = List();
+
+    fields.add("id");
+    fields.add("date_modified");
+    fields.add("total");
+    fields.add("billing");
+    fields.add("line_items");
+    
+    fieldsParam = fields.toString();
+
+    return fieldsParam;
+}

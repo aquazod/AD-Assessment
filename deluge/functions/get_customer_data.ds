@@ -6,7 +6,6 @@ string standalone.get_customer_data(Map order) {
 	phone = billing.get("phone");
 	orderId = order.get("id");
 	orderTotal = order.get("total");
-	orderStatus = order.get("status");
 	items = order.get("line_items");
 	
 	products = "";
@@ -26,7 +25,6 @@ string standalone.get_customer_data(Map order) {
 	customerData.put("phone",phone);
 	customerData.put("order_id",orderId);
 	customerData.put("order_total",orderTotal);
-	customerData.put("order_status",orderStatus);
 	customerData.put("products",products);
 
 	return customerData.toString();

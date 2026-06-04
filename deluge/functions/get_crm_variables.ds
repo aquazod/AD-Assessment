@@ -11,16 +11,25 @@ string standalone.get_crm_variables()
 
 	result = Map();
 
-	for each  v in variables {
+	neededVariables = List();
+	neededVariables.add("wp_base_url");
+	neededVariables.add("wc_rest_api");
+	neededVariables.add("wc_consumer_key");
+	neededVariables.add("wc_consumer_secret");
+	neededVariables.add("last_sync_timestamp");
+
+	for each  v in variables
+	{
 		varName = v.get("api_name");
-		
-		if (varName == "wp_base_url" || varName == "wc_rest_api" || varName == "wc_consumer_key" || varName == "wc_consumer_secret" || varName == "last_processed_order_id") {
+
+		if(neededVariables.contains(varName))
+		{
 			entry = Map();
 			entry.put("value",v.get("value"));
 			entry.put("id",v.get("id"));
 			result.put(varName,entry);
 		}
 	}
-
+	
 	return result.toString();
 }
