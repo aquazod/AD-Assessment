@@ -20,7 +20,7 @@ string standalone.create_deal(Map customerData,String contactId)
 	// --- Create new Deal ---
 	dealMap = Map();
 	dealMap.put("Deal_Name",dealName);
-	dealMap.put("Amount",orderTotal.toDecimal());
+	if (orderTotal != null) dealMap.put("Amount",orderTotal.toDecimal());
 	dealMap.put("Stage","Closed Won");
 	dealMap.put("Description","Products: " + products);
 
