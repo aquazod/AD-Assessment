@@ -1,0 +1,108 @@
+my scope:
+
+ZohoCRM.modules.leads.ALL, ZohoCRM.modules.contacts.ALL, ZohoCRM.modules.deals.ALL
+
+
+I choose the client type to be "Self Client"
+
+>>>>>>>> Challenges I faced in this assessment: <<<<<<<<<
+- Zoho doesn't recognize the localhost website on my machine to send a request to WooCommerce REST API
+Solution: used API gateway ngrok to get a public URL, and used the URL for integrations with Zoho
+- I created all the functions as standalone, all standalone functions have to return string, not other data types
+Solution: converted other datatypes toString() in the return statements for functions, converted them to other data types in the functions calls
+
+
+What I Would Put In README
+
+Sections:
+
+1. Overview
+2. Architecture
+3. Setup
+4. OAuth Configuration
+5. Running Integration
+6. Data Mapping
+7. Screenshots
+8. Assumptions
+9. Future Improvements
+
+Data Mapping
+
+Use a clear mapping table in README.
+
+WooCommerce	Zoho Contact
+first_name	First_Name
+last_name	Last_Name
+email	Email
+
+
+WooCommerce	Zoho Deal
+order_id	Deal_Name
+total	Amount
+customer_name	Contact
+
+
+
+>>>>> Future Improvements Section <<<<<
+
+This impresses reviewers.
+
+## Future Improvements
+
+- Webhook-based synchronization
+- Retry mechanism
+- Dead-letter queue
+- Contact deduplication strategy
+- Scheduled synchronization
+- Order status synchronization
+
+Current Implementation
+
+- Polls WooCommerce REST API for new orders.
+
+Production Recommendation
+
+- Replace polling with WooCommerce Webhooks.
+- Trigger synchronization immediately when an order is created.
+- Reduce API calls.
+- Improve data consistency.
+- Achieve near real-time synchronization.
+
+
+add to README
+
+Design Considerations
+
+The assessment requirements specify reading orders via the
+WooCommerce REST API.
+
+For production deployments, I would recommend replacing the
+polling mechanism with WooCommerce Webhooks to achieve
+event-driven synchronization and reduce API consumption.
+
+The current implementation follows the requested architecture
+while remaining compatible with future webhook-based
+enhancements.
+
+
+https://accounts.zoho.com/oauth/v2/auth?scope=ZohoCRM.modules.leads.ALL,ZohoCRM.modules.contacts.ALL,ZohoCRM.modules.deals.AL&client_id=1000.EKBXUY213OEGMBVPRWZWZNNHUU5S0G&response_type=code&access_type=offline&redirect_uri=https://deluge.zoho.com/delugeauth/callback
+
+https://accounts.zoho.com/oauth/v2/auth?access_type=offline&prompt=consent
+
+
+response = invokeUrl [
+	url: <url>
+	type: GET/POST/PUT/DELETE
+	parameters: <paramMap/string>
+	connection: "crm_connection"
+];
+
+TODO:
+send order by desc ID instead of asc -> handle lastupdatedid 
+
+add error handling everywhere
+
+add logs
+
+check security best practices
+
