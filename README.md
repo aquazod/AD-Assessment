@@ -8,12 +8,12 @@ Automatically synchronizes WooCommerce orders into Zoho CRM Contacts and Deals u
 
 1. [Overview](#overview)
 2. [Architecture](#architecture)
-3. [Setup](#setup)
-4. [OAuth Configuration](#oauth-configuration)
-5. [Running the Integration](#running-the-integration)
-6. [Data Mapping](#data-mapping)
-7. [Screenshots](#screenshots)
-8. [Challenges & Design Decisions/Assumptions](#assumptions--design-decisions)
+3. [Challenges & Design Decisions/Assumptions](#challenges--design-decisionsassumptions)
+4. [Setup](#setup)
+5. [OAuth Configuration](#oauth-configuration)
+6. [Running the Integration](#running-the-integration)
+7. [Data Mapping](#data-mapping)
+8. [Screenshots](#screenshots)
 9. [Future Improvements](#future-improvements)
 
 ---
