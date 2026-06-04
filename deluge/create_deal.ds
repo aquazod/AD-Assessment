@@ -1,0 +1,41 @@
+string standalone.create_deal(Map customerData,String contactId)
+{
+	orderId = customerData.get("order_id");
+	orderTotal = customerData.get("order_total");
+	products = customerData.get("products");
+	firstName = customerData.get("first_name");
+	lastName = customerData.get("last_name");
+
+	dealName = "WC Order #" + orderId + " - " + firstName + " " + lastName;
+
+	// --- Check if deal already exists ---
+	searchResponse = zoho.crm.searchRecords("Deals","(Deal_Name:equals:" + dealName + ")");
+
+	info "searchResponse: " + searchResponse;
+
+	if (searchResponse != null && searchResponse.size() > 0) {
+		return searchResponse.get(0).get("id");
+	}
+
+	// --- Create new Deal ---
+	dealMap = Map();
+	dealMap.put("Deal_Name",dealName);
+	dealMap.put("Amount",orderTotal.toDecimal());
+	dealMap.put("Stage","Closed Won");
+	dealMap.put("Description","Products: " + products);
+
+	contactLink = Map();
+	contactLink.put("id",contactId);
+
+	dealMap.put("Contact_Name",contactLink);
+
+	createResponse = zoho.crm.createRecord("Deals",dealMap);
+
+	info "createResponse: " + createResponse;
+
+	if (createResponse != null && createResponse.get("id") != null) {
+		return createResponse.get("id");
+	}
+	
+	return "";
+}

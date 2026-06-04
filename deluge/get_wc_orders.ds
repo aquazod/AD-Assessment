@@ -1,0 +1,61 @@
+string standalone.get_wc_orders()
+{
+	// --- Load CRM Variables ---
+	crmVars = standalone.get_crm_variables().toMap();
+	wc_base_url = crmVars.get("wp_base_url").toMap().get("value");
+	wc_rest_api = crmVars.get("wc_rest_api").toMap().get("value");
+	wc_consumer_key = crmVars.get("wc_consumer_key").toMap().get("value");
+	wc_consumer_secret = crmVars.get("wc_consumer_secret").toMap().get("value");
+	last_processed_var = crmVars.get("last_processed_order_id").toMap();
+	last_processed_order_id = last_processed_var.get("value").toLong();
+	last_processed_var_id = last_processed_var.get("id");
+
+	// --- Paginate through WooCommerce orders ---
+	allOrders = List();
+	page = 1;
+	perPage = 100;
+	maxOrderId = last_processed_order_id;
+
+	maxIterations = 1000;
+	loopCounter = leftpad("1",maxIterations).replaceAll(" ","1,").toList(); // work around to terminate the for each loop
+
+	
+	for each  item in loopCounter {
+		endpoint = (wc_base_url + wc_rest_api) + "orders" + "?consumer_key=" + wc_consumer_key + "&consumer_secret=" + wc_consumer_secret + "&orderby=id&order=asc" + "&per_page=" + perPage + "&page=" + page;
+		
+		pageOrders = invokeurl
+		[
+			url :endpoint
+			type :GET
+		];
+
+		if(pageOrders.size() == 0)
+		{
+			break;
+		}
+		for each  order in pageOrders {
+			orderId = order.get("id").toLong();
+
+			if (orderId > last_processed_order_id) {
+				allOrders.add(order);
+
+				if (orderId > maxOrderId){
+					maxOrderId = orderId;
+				}
+			}
+		}
+
+		if (pageOrders.size() < perPage) {
+			break;
+		} else {
+			page = page + 1;
+		}
+	}
+
+	// --- Update last_processed_order_id ---
+	if (maxOrderId > last_processed_order_id && last_processed_var_id != "") {
+		// standalone.update_crm_variable(last_processed_var_id,maxOrderId.toString());
+	}
+
+	return allOrders.toString();
+}

@@ -1,0 +1,20 @@
+string standalone.update_crm_variable(String varId,String varValue)
+{
+	varData = Map();
+	varData.put("id",varId);
+	varData.put("value",varValue);
+	varList = List();
+	varList.add(varData);
+
+	updateBody = Map();
+	updateBody.put("variables",varList);
+
+	invokeurl [
+		url :"https://www.zohoapis.com/crm/v8/settings/variables"
+		type :PUT
+		parameters:updateBody.toString()
+		connection:"crm_connection"
+	]
+
+	return "";
+}

@@ -1,0 +1,41 @@
+string standalone.create_contact(Map customerData)
+{
+	email = customerData.get("email");
+	firstName = customerData.get("first_name");
+	lastName = customerData.get("last_name");
+	phone = customerData.get("phone");
+
+	// --- Search for existing Contact by email ---
+	searchResponse = zoho.crm.searchRecords("Contacts","(Email:equals:" + email + ")");
+	info searchResponse;
+	info "searchResponse: " + searchResponse;
+
+
+	if (searchResponse != null && searchResponse.size() > 0) {
+		existingContact = searchResponse.get(0);
+		return existingContact.get("id");
+	}
+
+	// Create new Contact ---
+	contactMap = Map();
+	contactMap.put("First_Name",firstName);
+	contactMap.put("Last_Name",lastName);
+	contactMap.put("Email",email);
+	contactMap.put("Phone",phone);
+
+	contactList = List();
+	contactList.add(contactMap);
+	
+	requestBody = Map();
+	requestBody.put("data",contactList);
+
+	createResponse = zoho.crm.createRecord("Contacts",{"First_Name":firstName,"Last_Name":lastName,"Email":email,"Phone":phone});
+	
+	info "createResponse: " + createResponse;
+
+	if (createResponse != null && createResponse.get("id") != null) {
+		return createResponse.get("id");
+	}
+
+	return "";
+}

@@ -1,0 +1,26 @@
+string standalone.get_crm_variables()
+{
+	varResponse = invokeurl
+	[
+		url :"https://www.zohoapis.com/crm/v8/settings/variables"
+		type :GET
+		connection:"crm_connection"
+	];
+
+	variables = varResponse.get("variables");
+
+	result = Map();
+
+	for each  v in variables {
+		varName = v.get("api_name");
+		
+		if (varName == "wp_base_url" || varName == "wc_rest_api" || varName == "wc_consumer_key" || varName == "wc_consumer_secret" || varName == "last_processed_order_id") {
+			entry = Map();
+			entry.put("value",v.get("value"));
+			entry.put("id",v.get("id"));
+			result.put(varName,entry);
+		}
+	}
+
+	return result.toString();
+}

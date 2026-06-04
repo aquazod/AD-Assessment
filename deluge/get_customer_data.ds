@@ -1,0 +1,33 @@
+string standalone.get_customer_data(Map order) {
+	billing = order.get("billing");
+	firstName = billing.get("first_name");
+	lastName = billing.get("last_name");
+	email = billing.get("email");
+	phone = billing.get("phone");
+	orderId = order.get("id");
+	orderTotal = order.get("total");
+	orderStatus = order.get("status");
+	items = order.get("line_items");
+	
+	products = "";
+
+	for each  item in items{
+		products = products + item.get("name") + ", ";
+	}
+
+	if (products.length() > 2) {
+		products = products.subString(0,products.length() - 2);
+	}
+
+	customerData = Map();
+	customerData.put("first_name",firstName);
+	customerData.put("last_name",lastName);
+	customerData.put("email",email);
+	customerData.put("phone",phone);
+	customerData.put("order_id",orderId);
+	customerData.put("order_total",orderTotal);
+	customerData.put("order_status",orderStatus);
+	customerData.put("products",products);
+
+	return customerData.toString();
+}

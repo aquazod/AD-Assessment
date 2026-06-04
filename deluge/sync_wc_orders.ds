@@ -1,0 +1,53 @@
+string standalone.sync_wc_orders()
+{
+	// --- Step 1: Fetch new orders ---
+	ordersRaw = standalone.get_wc_orders();
+	orders = ordersRaw.toList();
+	info orders;
+
+	if (orders == null || orders.size() == 0) {
+		return "No new orders to sync.";
+	}
+	
+	syncedCount = 0;
+	errorLog = "";
+
+	for each  order in orders {
+		try {
+			// --- Step 2: Extract customer data ---
+			customerData = standalone.get_customer_data(order).toMap();
+			email = customerData.get("email");
+			if(email == null || email == "")
+			{
+				errorLog = errorLog + "Skipped order " + customerData.get("order_id") + ": no email.\n";
+				continue;
+			}
+			// --- Step 3: Create/find Contact ---
+			contactId = standalone.create_contract(customerData);
+			if(contactId == null || contactId == "")
+			{
+				errorLog = errorLog + "Failed to create contact for order " + customerData.get("order_id") + "\n";
+				continue;
+			}
+			// --- Step 4: Create Deal linked to Contact ---
+			dealId = standalone.create_deal(customerData,contactId);
+			if(dealId == null || dealId == "")
+			{
+				errorLog = errorLog + "Failed to create deal for order " + customerData.get("order_id") + "\n";
+				continue;
+			}
+			syncedCount = syncedCount + 1;
+		}
+		catch (e) {
+			errorLog = errorLog + "Error on order: " + e.toString() + "\n";
+		}
+	}
+
+	result = "Synced " + syncedCount + " orders.";
+
+	if (errorLog != "") {
+		result = result + "\nErrors:\n" + errorLog;
+	}
+
+	return result;
+}
